@@ -1,46 +1,73 @@
-import { createClient } from "@libsql/client/web";
-
 export default async function handler(req, res) {
-  // Buka CORS agar tidak diblokir browser
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  // Buka CORS Header
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
-  );
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
   }
 
-  const url = process.env.TURSO_URL;
-  const authToken = process.env.TURSO_TOKEN;
+  let rawUrl = process.env.TURSO_URL || "";
+  const token = process.env.TURSO_TOKEN || "";
 
-  // 1. Cek apakah Environment Variables terpasang
-  if (!url || !authToken) {
-    return res.status(200).json({ 
+  // 1. Cek ketersediaan Environment Variables
+  if (!rawUrl || !token) {
+    return res.status(500).json({ 
       error: "TURSO_URL atau TURSO_TOKEN belum dipasang di Environment Variables Vercel!" 
     });
   }
 
+  // 2. Format URL agar sesuai dengan Turso HTTP API (https://.../v2/pipeline)
+  let baseUrl = rawUrl.replace("libsql://", "https://");
+  if (baseUrl.endsWith("/")) {
+    baseUrl = baseUrl.slice(0, -1);
+  }
+  const endpoint = `${baseUrl}/v2/pipeline`;
+
   try {
-    // Ubah protocol libsql:// menjadi https:// khusus untuk web client HTTP jika diperlukan
-    const httpUrl = url.replace("libsql://", "https://");
-    
-    const db = createClient({ 
-      url: httpUrl, 
-      authToken: authToken 
+    // 3. Tembak HTTP API Turso secara langsung tanpa SDK
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        requests: [
+          { type: "execute", stmt: { sql: "SELECT * FROM talents;" } },
+          { type: "close" }
+        ]
+      })
     });
 
-    const result = await db.execute("SELECT * FROM talents");
+    const data = await response.json();
 
-    // Kembalikan data baris
-    return res.status(200).json(result.rows || []);
-  } catch (error) {
-    console.error("Turso Error Detail:", error);
-    return res.status(500).json({ 
-      error: error.message || "Gagal terkoneksi ke Turso DB" 
+    // 4. Cek jika Turso menolak request (misal Token/URL/Query Salah)
+    if (!response.ok) {
+      return res.status(500).json({ 
+        error: `Turso API Error (${response.status}): ${JSON.stringify(data)}` 
+      });
+    }
+
+    // 5. Parse baris data hasil query
+    const results = data.results[0];
+    if (results.type === "error") {
+      return res.status(500).json({ error: `SQL Error: ${results.error.message}` });
+    }
+
+    const cols = results.response.result.cols.map(c => c.name);
+    const rows = results.response.result.rows.map(row => {
+      let obj = {};
+      row.forEach((val, idx) => {
+        obj[cols[idx]] = val.value;
+      });
+      return obj;
     });
+
+    return res.status(200).json(rows);
+
+  } catch (err) {
+    return res.status(500).json({ error: `Fetch Exception: ${err.message}` });
   }
 }
