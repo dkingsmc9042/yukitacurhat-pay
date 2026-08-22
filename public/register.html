@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pendaftaran Talent — Sleepcall Pay</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .glass-card { background: rgba(30, 41, 59, 0.75); backdrop-filter: blur(12px); }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-between p-4 relative">
+
+  <main class="w-full max-w-md mx-auto space-y-5 z-10 py-6">
+    <div class="text-center space-y-1">
+      <a href="index.html" class="inline-block text-xs text-slate-400 hover:text-white mb-2">
+        <i class="fa-solid fa-arrow-left mr-1"></i> Kembali ke Katalog
+      </a>
+      <h1 class="text-2xl font-extrabold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">Pendaftaran Talent</h1>
+      <p class="text-xs text-slate-400">Isi data lengkapmu untuk diajukan ke Admin 🌙</p>
+    </div>
+
+    <form onsubmit="submitTalentRequest(event)" class="glass-card border border-slate-800 rounded-3xl p-6 space-y-4 shadow-xl">
+      <div>
+        <label class="text-xs font-semibold text-slate-300 block mb-1">Nama Lengkap</label>
+        <input type="text" id="regName" required placeholder="Contoh: Alya Maharani" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-pink-500">
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs font-semibold text-slate-300 block mb-1">Username Sosial Media</label>
+          <input type="text" id="regUsername" required placeholder="@alyasleepcall" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-pink-500">
+        </div>
+        <div>
+          <label class="text-xs font-semibold text-slate-300 block mb-1">Usia & Gender</label>
+          <div class="flex gap-2">
+            <input type="number" id="regAge" required placeholder="21" class="w-16 bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-2.5 text-xs text-white focus:outline-none focus:border-pink-500">
+            <select id="regGender" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-2 py-2.5 text-xs text-white focus:outline-none focus:border-pink-500">
+              <option value="Perempuan">Perempuan</option>
+              <option value="Laki-laki">Laki-laki</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xs font-semibold text-slate-300 block mb-1">Link Foto Profil (URL Gambar)</label>
+        <input type="url" id="regAvatar" required placeholder="https://images.unsplash.com/..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-pink-500">
+      </div>
+
+      <div>
+        <label class="text-xs font-semibold text-slate-300 block mb-1">Link Sample Voice Audio (URL MP3)</label>
+        <input type="url" id="regVoice" required placeholder="https://domain.com/voice-sample.mp3" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-pink-500">
+      </div>
+
+      <div>
+        <label class="text-xs font-semibold text-slate-300 block mb-1">Request Tarif Coin (Per Jam)</label>
+        <div class="relative">
+          <input type="number" id="regCoins" required placeholder="35" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-pink-500">
+          <span class="absolute right-3 top-2.5 text-xs font-bold text-amber-400"><i class="fa-solid fa-coins"></i> Coin</span>
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xs font-semibold text-slate-300 block mb-1">Bio / Keterangan Kualifikasi</label>
+        <textarea id="regBio" rows="3" required placeholder="Ceritakan keahlianmu dalam berkomunikasi & pengantar tidur..." class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-pink-500"></textarea>
+      </div>
+
+      <button type="submit" id="btnSubmit" class="w-full py-3 bg-gradient-to-r from-pink-500 to-purple-600 font-bold text-xs text-white rounded-xl shadow-lg shadow-pink-500/25 transition-all">
+        Kirim Pendaftaran ke Admin <i class="fa-solid fa-paper-plane ml-1"></i>
+      </button>
+    </form>
+  </main>
+
+  <script>
+    async function submitTalentRequest(e) {
+      e.preventDefault();
+      const btn = document.getElementById("btnSubmit");
+      btn.disabled = true;
+      btn.innerText = "Mengirim...";
+
+      const newReq = {
+        id: "req-" + Date.now(),
+        name: document.getElementById("regName").value,
+        username: document.getElementById("regUsername").value,
+        age: parseInt(document.getElementById("regAge").value),
+        gender: document.getElementById("regGender").value,
+        avatar: document.getElementById("regAvatar").value,
+        voiceUrl: document.getElementById("regVoice").value,
+        requestedCoins: parseInt(document.getElementById("regCoins").value),
+        bio: document.getElementById("regBio").value
+      };
+
+      try {
+        const res = await fetch('/api/requests', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newReq)
+        });
+
+        if (res.ok) {
+          alert("Pendaftaran berhasil dikirim! Admin akan meninjau foto, suara, dan koin request kamu.");
+          window.location.href = "index.html";
+        } else {
+          alert("Terjadi kesalahan saat mengirim pendaftaran.");
+        }
+      } catch (err) {
+        alert("Gagal terhubung ke database server.");
+      } finally {
+        btn.disabled = false;
+        btn.innerText = "Kirim Pendaftaran ke Admin";
+      }
+    }
+  </script>
+</body>
+</html>
