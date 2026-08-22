@@ -6,6 +6,7 @@
   <title>Sleepcall Pay — Katalog Talent Partner</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌙</text></svg>">
   
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -17,35 +18,45 @@
       }
     }
   </script>
+  
+  <!-- FontAwesome Icons & Google Fonts -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- GSAP Animation -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
   <style>
     body { font-family: 'Plus Jakarta Sans', sans-serif; }
-    .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); }
+    .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
   </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-between p-4 relative overflow-x-hidden">
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col items-center justify-between p-4 relative overflow-x-hidden selection:bg-pink-500 selection:text-white">
 
+  <!-- Background Glow Orbs -->
   <div class="fixed top-[-10%] left-[-10%] w-[350px] h-[350px] bg-pink-600/20 rounded-full blur-[120px] pointer-events-none"></div>
   <div class="fixed bottom-[-10%] right-[-10%] w-[350px] h-[350px] bg-purple-600/20 rounded-full blur-[120px] pointer-events-none"></div>
 
+  <!-- Main Container -->
   <main class="w-full max-w-md mx-auto my-auto space-y-5 z-10 py-6">
     
+    <!-- Header Title -->
     <header class="text-center space-y-2">
       <div class="flex items-center justify-center gap-2">
-        <h1 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+        <h1 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-pink-400 via-purple-300 to-indigo-400 bg-clip-text text-transparent">
           Sleepcall Pay
         </h1>
-        <i class="fa-solid fa-circle-check text-pink-500 text-sm"></i>
+        <i class="fa-solid fa-circle-check text-pink-500 text-sm" title="Verified Service"></i>
       </div>
-      <p class="text-xs text-slate-400">Pilih Talent Partner Favoritmu 🌙</p>
+      <p class="text-xs text-slate-400 font-medium">Pilih Talent Partner Favoritmu 🌙</p>
     </header>
 
-    <div class="flex items-center justify-between p-3.5 rounded-2xl glass-card border border-amber-500/30 bg-amber-500/5">
+    <!-- Banner Top-Up Coin via Pakasir -->
+    <div class="flex items-center justify-between p-3.5 rounded-2xl glass-card border border-amber-500/30 bg-amber-500/5 shadow-lg shadow-amber-500/5">
       <div class="flex items-center gap-2.5">
-        <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
+        <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center flex-shrink-0">
           <i class="fa-solid fa-coins text-base"></i>
         </div>
         <div>
@@ -53,32 +64,38 @@
           <p class="text-[10px] text-slate-400">Top-Up instan via QRIS Pakasir</p>
         </div>
       </div>
-      <a href="topup.html" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl transition-all">
+      <a href="topup.html" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl transition-all shadow-md active:scale-95">
         Beli Coin
       </a>
     </div>
 
+    <!-- Filter Gender Tabs -->
     <div class="flex p-1 bg-slate-900 border border-slate-800 rounded-xl text-xs font-semibold">
-      <button onclick="filterTalent('all')" id="btn-all" class="flex-1 py-2 rounded-lg bg-pink-500 text-white transition-all">Semua</button>
+      <button onclick="filterTalent('all')" id="btn-all" class="flex-1 py-2 rounded-lg bg-pink-500 text-white transition-all shadow-sm">Semua</button>
       <button onclick="filterTalent('Perempuan')" id="btn-Perempuan" class="flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition-all">Perempuan</button>
       <button onclick="filterTalent('Laki-laki')" id="btn-Laki-laki" class="flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition-all">Laki-laki</button>
     </div>
 
+    <!-- Container List Talent (Dynamic Render) -->
     <section id="talentList" class="space-y-3.5">
-      <p class="text-xs text-slate-500 text-center py-8">Memuat data talent dari server...</p>
+      <div class="text-center py-8 space-y-2">
+        <div class="w-6 h-6 border-2 border-pink-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+        <p class="text-xs text-slate-500">Memuat data talent dari server...</p>
+      </div>
     </section>
 
+    <!-- Bottom Menu Navigation -->
     <section class="space-y-2.5 pt-2">
       <a href="register.html"
-         class="w-full flex items-center justify-between p-3.5 rounded-2xl glass-card border border-slate-800 hover:border-emerald-500/50 text-xs font-semibold transition-all">
+         class="w-full flex items-center justify-between p-3.5 rounded-2xl glass-card border border-slate-800 hover:border-emerald-500/50 text-xs font-semibold transition-all hover:scale-[1.01] active:scale-[0.99]">
         <span class="flex items-center gap-2.5">
           <i class="fa-solid fa-user-plus text-emerald-400"></i> Daftar Jadi Talent Partner
         </span>
-        <i class="fa-solid fa-chevron-right text-slate-500"></i>
+        <i class="fa-solid fa-chevron-right text-slate-500 text-xs"></i>
       </a>
 
       <a href="admin.html"
-         class="w-full flex items-center justify-between p-3 rounded-2xl bg-slate-900/50 border border-slate-800/80 hover:border-pink-500/40 text-[11px] font-medium text-slate-400 transition-all">
+         class="w-full flex items-center justify-between p-3 rounded-2xl bg-slate-900/50 border border-slate-800/80 hover:border-pink-500/40 text-[11px] font-medium text-slate-400 transition-all hover:scale-[1.01] active:scale-[0.99]">
         <span class="flex items-center gap-2">
           <i class="fa-solid fa-user-shield text-pink-400"></i> Login Portal Admin
         </span>
@@ -88,23 +105,37 @@
 
   </main>
 
+  <!-- Footer -->
   <footer class="text-center text-xs text-slate-500 py-4 z-10">
     <p>© 2026 Sleepcall Pay. All rights reserved.</p>
   </footer>
 
+  <!-- Script Fetch Data & Interaktivitas -->
   <script>
     let allTalents = [];
 
     document.addEventListener("DOMContentLoaded", () => {
       fetch('/api/talents')
-        .then(res => res.json())
+        .then(async res => {
+          const data = await res.json();
+          if (!res.ok || data.error) {
+            throw new Error(data.error || `HTTP Status ${res.status}: Gagal memuat data.`);
+          }
+          return data;
+        })
         .then(data => {
-          allTalents = data;
-          renderTalents(data);
+          allTalents = Array.isArray(data) ? data : [];
+          renderTalents(allTalents);
         })
         .catch(err => {
-          console.error(err);
-          document.getElementById("talentList").innerHTML = `<p class="text-xs text-red-400 text-center py-8">Gagal mengambil data dari database Turso.</p>`;
+          console.error("Fetch Error:", err);
+          document.getElementById("talentList").innerHTML = `
+            <div class="p-4 rounded-2xl bg-red-500/10 border border-red-500/30 text-center space-y-1.5">
+              <i class="fa-solid fa-triangle-exclamation text-red-400 text-lg"></i>
+              <p class="text-xs font-bold text-red-400">Gagal Terhubung ke Database Turso</p>
+              <p class="text-[11px] text-red-300/90 break-all leading-relaxed">${err.message}</p>
+            </div>
+          `;
         });
     });
 
@@ -112,43 +143,51 @@
       const container = document.getElementById("talentList");
       container.innerHTML = "";
 
-      if(list.length === 0) {
-        container.innerHTML = `<p class="text-xs text-slate-500 text-center py-8">Belum ada talent tersedia di database.</p>`;
+      if (!list || list.length === 0) {
+        container.innerHTML = `
+          <div class="p-6 rounded-2xl glass-card border border-slate-800 text-center space-y-1">
+            <p class="text-xs font-semibold text-slate-400">Belum Ada Talent Tersedia</p>
+            <p class="text-[11px] text-slate-500">Database belum memiliki data talent aktif.</p>
+          </div>
+        `;
         return;
       }
 
       list.forEach(t => {
         const isOnline = t.status === "Online";
         const statusBadge = isOnline 
-          ? `<span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-md border border-emerald-500/20"><i class="fa-solid fa-circle text-[6px]"></i> Online</span>`
-          : `<span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-md"><i class="fa-solid fa-circle text-[6px]"></i> Busy</span>`;
+          ? `<span class="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded-md border border-emerald-500/20 flex items-center gap-1"><i class="fa-solid fa-circle text-[6px]"></i> Online</span>`
+          : `<span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded-md flex items-center gap-1"><i class="fa-solid fa-circle text-[6px]"></i> Busy</span>`;
 
         const card = document.createElement("a");
         card.href = `talent.html?id=${t.id}`;
-        card.className = "talent-card group block p-4 rounded-2xl glass-card border border-slate-800 hover:border-pink-500/50 hover:bg-slate-900/90 transition-all duration-300 hover:scale-[1.02]";
+        card.className = "talent-card group block p-4 rounded-2xl glass-card border border-slate-800 hover:border-pink-500/50 hover:bg-slate-900/90 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-pink-500/10 active:scale-[0.98]";
         card.innerHTML = `
           <div class="flex items-center space-x-3.5">
             <div class="relative w-14 h-14 rounded-full p-0.5 bg-gradient-to-tr from-pink-500 to-purple-500 flex-shrink-0">
-              <img src="${t.avatar}" alt="${t.name}" class="w-full h-full object-cover rounded-full border border-slate-900">
+              <img src="${t.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=300&q=80'}" 
+                   alt="${t.name}" 
+                   class="w-full h-full object-cover rounded-full border border-slate-900">
             </div>
             <div class="flex-1 min-w-0">
-              <div class="flex items-center justify-between">
+              <div class="flex items-center justify-between gap-1">
                 <h2 class="text-sm font-bold text-slate-100 group-hover:text-pink-300 truncate">${t.name}</h2>
                 ${statusBadge}
               </div>
-              <p class="text-xs text-slate-400">${t.username} • ${t.age} thn</p>
+              <p class="text-xs text-slate-400 mt-0.5 truncate">${t.username || '@partner'} • ${t.age || 20} thn</p>
               <div class="flex items-center gap-2 mt-1.5 text-[11px]">
                 <span class="text-amber-400 font-bold"><i class="fa-solid fa-coins"></i> ${t.coins || 35} Coin/jam</span>
                 <span class="text-slate-600">•</span>
                 <span class="text-slate-400"><i class="fa-solid fa-star text-amber-400 text-xs"></i> ${t.rating || 5.0}</span>
               </div>
             </div>
-            <i class="fa-solid fa-chevron-right text-xs text-slate-500 group-hover:text-pink-400 group-hover:translate-x-1 transition-all"></i>
+            <i class="fa-solid fa-chevron-right text-xs text-slate-500 group-hover:text-pink-400 group-hover:translate-x-1 transition-all flex-shrink-0"></i>
           </div>
         `;
         container.appendChild(card);
       });
 
+      // Animasi masuk menggunakan GSAP
       gsap.fromTo(".talent-card", 
         { y: 20, opacity: 0 }, 
         { y: 0, opacity: 1, duration: 0.4, stagger: 0.08, ease: "power2.out" }
@@ -159,7 +198,7 @@
       document.querySelectorAll("[id^='btn-']").forEach(btn => {
         btn.className = "flex-1 py-2 rounded-lg text-slate-400 hover:text-white transition-all";
       });
-      document.getElementById(`btn-${gender}`).className = "flex-1 py-2 rounded-lg bg-pink-500 text-white transition-all";
+      document.getElementById(`btn-${gender}`).className = "flex-1 py-2 rounded-lg bg-pink-500 text-white transition-all shadow-sm";
 
       const filtered = gender === 'all' ? allTalents : allTalents.filter(t => t.gender === gender);
       renderTalents(filtered);
